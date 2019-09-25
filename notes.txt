@@ -1,0 +1,4 @@
+eslint
+dotenv
+webpack
+global variables

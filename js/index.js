@@ -13,10 +13,12 @@ draw.update()
 canvas.addEventListener('click', (e) => {
   if (mustBeAttack) {
     if (rules.attackChecker(e)) {
-      rules.nextPas()
+      if (!rules.attacksForActive()) {
+        rules.nextPas()
 
-      if (!rules.checkAllAttacks()) {
-        rules.checkAllMoves()
+        if (!rules.checkAllAttacks()) {
+          rules.checkAllMoves()
+        }
       }
     }
     else {

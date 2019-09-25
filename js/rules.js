@@ -3,7 +3,8 @@ const rules = {
     const x = e.offsetX
     const y = e.offsetY
 
-    return x > cell.x && x < cell.x + canvasSize / 8 && y > cell.y && y < cell.y + canvasSize / 8
+    return x > cell.x && x < cell.x + canvasSize / 8 
+        && y > cell.y && y < cell.y + canvasSize / 8
   },
 
 
@@ -102,6 +103,7 @@ const rules = {
 
   attacksForActive() {
     const active = board.find(checker => checker.isActive)
+    let areAttacks = false
 
     board.forEach(cell => {
       if (!cell.color) {
@@ -112,11 +114,14 @@ const rules = {
     active.lines.forEach(line => {
       if (line[line.indexOf(active) + 2] && line[line.indexOf(active) + 1].color === colorOfEnemy && !line[line.indexOf(active) + 2].color) {
         line[line.indexOf(active) + 2].hasMove = true
+        areAttacks = true
       } 
-      else if (line[line.indexOf(active) - 2] && line[line.indexOf(active) - 1].color === colorOfEnemy && !line[line.indexOf(active) - 2].color) {
+      if (line[line.indexOf(active) - 2] && line[line.indexOf(active) - 1].color === colorOfEnemy && !line[line.indexOf(active) - 2].color) {
         line[line.indexOf(active) - 2].hasMove = true
+        areAttacks = true
       } 
     })
+    return areAttacks
   },
 
 
@@ -132,10 +137,12 @@ const rules = {
 
         empty.color = active.color
         empty.queen = active.queen
+        empty.isActive = true
         enemy.color = false
         enemy.queen = false
         active.color = false
         active.queen = false
+        active.isActive = false
 
         attackIsDone = true
       }
