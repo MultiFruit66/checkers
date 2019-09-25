@@ -6,11 +6,13 @@ const rules = {
     return x > cell.x && x < cell.x + canvasSize / 8 && y > cell.y && y < cell.y + canvasSize / 8
   },
 
+
   nextPas() {
     countOfPas += 1
     colorOfPas = countOfPas % 2 ? 'red' : 'green'
-    console.log(countOfPas, colorOfPas)
+    colorOfEnemy = countOfPas % 2 ? 'green' : 'red'
   },
+
 
   checkAllMoves() {
     const moveTo = countOfPas % 2 ? 1 : -1
@@ -29,6 +31,7 @@ const rules = {
     })
   },
 
+
   makeActive(e) {
     board.forEach(checker => {
       if (this.isCursorInCell(e, checker) && checker.hasMove) {
@@ -37,6 +40,7 @@ const rules = {
       }
     })
   },
+
 
   movesForActive() {
     const moveTo = countOfPas % 2 ? 1 : -1
@@ -55,6 +59,7 @@ const rules = {
     })
   },
 
+
   moveChecker(e) {
     let moveIsDone = false
 
@@ -63,9 +68,9 @@ const rules = {
         const active = board.find(active => active.isActive)
 
         empty.color = active.color
-        empty.queen = active.color
+        empty.queen = active.queen
         active.color = false
-        active.color = false
+        active.queen = false
 
         moveIsDone = true
       }
@@ -73,12 +78,68 @@ const rules = {
     return moveIsDone
   },
 
-  checkAllAttacks() {
-    const queens = board.filter(cell => cell.color === colorOfPas && cell.isQueen)
-    const simples = board.filter(cell => cell.color === colorOfPas && !cell.isQueen)
 
-    queens.forEach(queen => {
-      queen.lines.forEach(line => line)
+  checkAllAttacks() {
+    mustBeAttack = false
+
+    board.forEach(checker => {
+      checker.lines.forEach(line => {
+        if (checker.color === colorOfPas && (line[line.indexOf(checker) + 2] && line[line.indexOf(checker) + 1].color === colorOfEnemy && !line[line.indexOf(checker) + 2].color
+        || line[line.indexOf(checker) - 2] && line[line.indexOf(checker) - 1].color === colorOfEnemy && !line[line.indexOf(checker) - 2].color)) {
+
+          if (!mustBeAttack) {
+            board.forEach(cell => cell.hasMove = false)
+          }
+
+          checker.hasMove = true
+          mustBeAttack = true
+        }
+      })
     })
+    return mustBeAttack
+  },
+
+
+  attacksForActive() {
+    const active = board.find(checker => checker.isActive)
+
+    board.forEach(cell => {
+      if (!cell.color) {
+        cell.hasMove = false
+      }
+    })
+
+    active.lines.forEach(line => {
+      if (line[line.indexOf(active) + 2] && line[line.indexOf(active) + 1].color === colorOfEnemy && !line[line.indexOf(active) + 2].color) {
+        line[line.indexOf(active) + 2].hasMove = true
+      } 
+      else if (line[line.indexOf(active) - 2] && line[line.indexOf(active) - 1].color === colorOfEnemy && !line[line.indexOf(active) - 2].color) {
+        line[line.indexOf(active) - 2].hasMove = true
+      } 
+    })
+  },
+
+
+  attackChecker(e) {
+    let attackIsDone = false
+
+    board.forEach(empty => {
+      if (this.isCursorInCell(e, empty) && empty.hasMove && !empty.color) {
+
+        const active = board.find(active => active.isActive)
+        const line = active.lines.find(line => ~line.indexOf(empty))
+        const enemy = line[ (line.indexOf(active) + line.indexOf(empty)) / 2 ]
+
+        empty.color = active.color
+        empty.queen = active.queen
+        enemy.color = false
+        enemy.queen = false
+        active.color = false
+        active.queen = false
+
+        attackIsDone = true
+      }
+    })
+    return attackIsDone
   }
 }
