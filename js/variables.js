@@ -1,8 +1,8 @@
 const canvasSize = window.innerHeight < window.innerWidth ? window.innerHeight * 0.9 : window.innerWidth * 0.9
 
 let countOfPas = 0
-let colorOfPas = 'green'
-let colorOfEnemy = 'red'
+let colorOfPas = countOfPas % 2 ? 'red' : 'green'
+let colorOfEnemy = countOfPas % 2 ? 'green' : 'red'
 let mustBeAttack = false
 
 //next is only filling the board with the necessary parameters
