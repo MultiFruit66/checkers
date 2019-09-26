@@ -170,8 +170,8 @@ const rules = {
           if (attackLine) {
             attackLine = attackLine[0].trim().split(' ').map(cell => cell === 'false' ? false : cell)
     
-            if (attackLine.every((cell, i) => cell === line[i + line.indexOf(active)].color)
-            || attackLine.reverse().every((cell, i) => cell === line[line.indexOf(active) - i].color)) {
+            if (attackLine.every((cell, i) => line[i + line.indexOf(active)] && cell === line[i + line.indexOf(active)].color)
+            || attackLine.reverse().every((cell, i) => line[line.indexOf(active) - i] && cell === line[line.indexOf(active) - i].color)) {
               for (let i = attackLine.length - 1; i >= 0; --i) {
                 if (!line[eval(exp)].color) {
                   line[eval(exp)].hasMove = true
@@ -203,14 +203,13 @@ const rules = {
         between[0] += 1
         const enemy = line.slice(...between).find(enemy => enemy.color)
         
-
         empty.color = active.color
-        empty.queen = active.queen
+        empty.isQueen = active.isQueen
         empty.isActive = true
         enemy.color = false
-        enemy.queen = false
+        enemy.isQueen = false
         active.color = false
-        active.queen = false
+        active.isQueen = false
         active.isActive = false
 
         attackIsDone = true
