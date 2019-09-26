@@ -1,6 +1,6 @@
 draw.app()
 
-const canvas  = document.getElementById('canvas')
+const canvas = document.getElementById('canvas')
 const ctx = canvas.getContext('2d')
 
 canvas.setAttribute('width', canvasSize)
@@ -11,32 +11,46 @@ rules.checkAllMoves()
 draw.update()
 
 canvas.addEventListener('click', (e) => {
-  if (mustBeAttack) {
-    if (rules.attackChecker(e)) {
-      if (!rules.attacksForActive()) {
-        rules.nextPas()
+  if (board.find(cell => rules.isCursorInCell(e, cell) && cell.hasMove)) {
+    if (mustBeAttack) {
+      if (rules.attackChecker(e)) {
+        if (!rules.attacksForActive()) {
+          rules.checkChangingToQueen()
+          rules.nextPas()
+          console.log('was attack')
 
-        if (!rules.checkAllAttacks()) {
-          rules.checkAllMoves()
+          if (!rules.checkAllAttacks()) {
+            rules.checkAllMoves()
+            console.log("hasn't attacks")
+          } else {
+            console.log('has attacks')
+          }
         }
       }
+      else {
+        rules.checkChangingToQueen()
+        rules.makeActive(e)
+        rules.attacksForActive()
+        console.log('picked attack checker')
+      }
     }
-    else {
-      rules.makeActive(e)
-      rules.attacksForActive()
-    }
-  }
-  else if (rules.moveChecker(e)) {
-    rules.nextPas()
+    else if (rules.moveChecker(e)) {
+      rules.checkChangingToQueen()
+      rules.nextPas()
 
-    if (!rules.checkAllAttacks()) {
+      if (!rules.checkAllAttacks()) {
+        rules.checkAllMoves()
+        console.log('all moves')
+      } else {
+        console.log('has attacks after move')
+      }
+    } 
+    else {
       rules.checkAllMoves()
+      rules.makeActive(e)
+      rules.movesForActive()
+      console.log('changed move')
     }
-  } 
-  else {
-    rules.checkAllMoves()
-    rules.makeActive(e)
-    rules.movesForActive()
+    draw.update()
   }
-  draw.update()
 })

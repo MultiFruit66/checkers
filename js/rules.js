@@ -148,5 +148,16 @@ const rules = {
       }
     })
     return attackIsDone
+  },
+
+  checkChangingToQueen() {
+    board.forEach((cell, index) => {
+      if (index < 4 && cell.color === 'green') {
+        cell.isQueen = true
+      }
+      else if (index > 27 && cell.color === 'red') {
+        cell.isQueen = true
+      }
+    })
   }
 }
