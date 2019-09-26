@@ -16,9 +16,15 @@ canvas.addEventListener('click', (e) => {
         rules.checkChangingToQueen()
         if (!rules.attacksForActive()) {
           rules.nextPas()
-          if (rules.checkAllAttacks()) {
-          } else {
-            rules.checkAllMoves()
+          if (!rules.checkAllAttacks()) {
+            if (!rules.checkAllMoves()) {
+              rules.nextPas()
+              if (rules.checkAllMoves()) {
+                draw.finish(`Winner is ${colorOfPas}!!!`)
+              } else {
+                draw.finish('It\'s draw!')
+              }
+            }
           }
         }
       }
@@ -32,7 +38,14 @@ canvas.addEventListener('click', (e) => {
       rules.nextPas()
 
       if (!rules.checkAllAttacks()) {
-        rules.checkAllMoves()
+        if (!rules.checkAllMoves()) {
+          rules.nextPas()
+          if (rules.checkAllMoves()) {
+            draw.finish(`Winner is ${colorOfPas}!!!`)
+          } else {
+            draw.finish('It\'s draw!')
+          }
+        }
       }
     } 
     else {

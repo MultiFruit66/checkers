@@ -1,9 +1,8 @@
 const draw = {
-  update() {
-    this.clear()
-    this.active()
-    this.board()
-    this.checkers()
+  app() {
+    const background = new Image()
+    background.src = './img/background.png'
+    background.onload = () => document.getElementById('app').style.opacity = 1
   },
 
   clear() {
@@ -14,15 +13,6 @@ const draw = {
     board.forEach(cell => {
       ctx.fillStyle = '#000'
       ctx.fillRect(cell.x, cell.y, canvasSize / 8, canvasSize / 8)
-    })
-  },
-
-  checkers() {
-    board.forEach(cell => {
-      if (cell.color) {
-        ctx.fillStyle = cell.color
-        this.checker(cell.x + canvasSize / 16, cell.y + canvasSize / 16, cell.isQueen)
-      }
     })
   },
 
@@ -44,18 +34,36 @@ const draw = {
     }
   },
 
-  active() {
+  checkers() {
     board.forEach(cell => {
-      if (cell.hasMove) {
-        ctx.fillStyle = cell.isActive ? '#00f' : '#09f'
-        ctx.fillRect(cell.x - 5, cell.y - 5, canvasSize / 8 + 10, canvasSize / 8 + 10)
+      if (cell.color) {
+        ctx.fillStyle = cell.color
+        this.checker(cell.x + canvasSize / 16, cell.y + canvasSize / 16, cell.isQueen)
       }
     })
   },
 
-  app() {
-    const background = new Image()
-    background.src = './img/background.png'
-    background.onload = () => document.getElementById('app').style.opacity = 1
+  active() {
+    board.forEach(cell => {
+      if (cell.hasMove) {
+        ctx.fillStyle = cell.isActive ? '#00f' : '#09f'
+        ctx.fillRect(cell.x - canvasSize / 160, cell.y - canvasSize / 160, canvasSize / 7.3, canvasSize / 7.3)
+      }
+    })
+  },
+
+  update() {
+    this.clear()
+    this.active()
+    this.board()
+    this.checkers()
+  },
+
+  finish(winner) {
+    draw.update()
+    setTimeout(() => {
+      alert(winner)
+      window.location.reload()
+    }, 100)
   }
 }

@@ -8,15 +8,9 @@ const rules = {
   },
 
 
-  nextPas() {
-    countOfPas += 1
-    colorOfPas = countOfPas % 2 ? 'red' : 'green'
-    colorOfEnemy = countOfPas % 2 ? 'green' : 'red'
-  },
-
-
   checkAllMoves() {
     const moveTo = countOfPas % 2 ? 1 : -1
+    let hasMoves = false
     
     board.forEach(checker => {
       checker.hasMove = false
@@ -24,15 +18,18 @@ const rules = {
       checker.lines.forEach(line => {
         if (checker.color === colorOfPas && line[line.indexOf(checker) + moveTo] && !line[ line.indexOf(checker) + moveTo ].color) {
           checker.hasMove = true
+          hasMoves = true
         } 
         else if (checker.color === colorOfPas && checker.isQueen && line[line.indexOf(checker) - moveTo] && !line[ line.indexOf(checker) - moveTo ].color) {
           checker.hasMove = true
+          hasMoves = true
         }
       })
     })
+    return hasMoves
   },
 
-
+  
   makeActive(e) {
     board.forEach(checker => {
       if (this.isCursorInCell(e, checker) && checker.hasMove) {
@@ -90,6 +87,11 @@ const rules = {
     return moveIsDone
   },
 
+  nextPas() {
+    countOfPas += 1
+    colorOfPas = countOfPas % 2 ? 'red' : 'green'
+    colorOfEnemy = countOfPas % 2 ? 'green' : 'red'
+  },
 
   checkAllAttacks() {
     mustBeAttack = false
@@ -227,5 +229,10 @@ const rules = {
         cell.isQueen = true
       }
     })
+  },
+
+
+  checkFinish() {
+    console.log(board.reduce((count, red) => red.color === 'red' ? count + 1 : count))
   }
 }
