@@ -2,9 +2,7 @@ import rules from './rules'
 import draw from './draw'
 import { pas, board } from './variables'
 
-
 draw.app()
-
 rules.checkAllMoves()
 draw.update()
 
@@ -46,7 +44,7 @@ document.addEventListener('click', (e) => {
           }
         }
       }
-    } 
+    }
     else {
       rules.checkAllMoves()
       rules.makeActive(e)
