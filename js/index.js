@@ -1,17 +1,16 @@
+import rules from './rules'
+import draw from './draw'
+import { pas, board } from './variables'
+
+
 draw.app()
-
-const canvas = document.getElementById('canvas')
-const ctx = canvas.getContext('2d')
-
-canvas.setAttribute('width', canvasSize)
-canvas.setAttribute('height', canvasSize)
 
 rules.checkAllMoves()
 draw.update()
 
-canvas.addEventListener('click', (e) => {
+document.addEventListener('click', (e) => {
   if (board.find(cell => rules.isCursorInCell(e, cell) && cell.hasMove)) {
-    if (mustBeAttack) {
+    if (pas.mustBeAttack) {
       if (rules.attackChecker(e)) {
         rules.checkChangingToQueen()
         if (!rules.attacksForActive()) {
@@ -20,7 +19,7 @@ canvas.addEventListener('click', (e) => {
             if (!rules.checkAllMoves()) {
               rules.nextPas()
               if (rules.checkAllMoves()) {
-                draw.finish(`Winner is ${colorOfPas}!!!`)
+                draw.finish(`Winner is ${pas.color}!!!`)
               } else {
                 draw.finish('It\'s draw!')
               }
@@ -41,7 +40,7 @@ canvas.addEventListener('click', (e) => {
         if (!rules.checkAllMoves()) {
           rules.nextPas()
           if (rules.checkAllMoves()) {
-            draw.finish(`Winner is ${colorOfPas}!!!`)
+            draw.finish(`Winner is ${pas.color}!!!`)
           } else {
             draw.finish('It\'s draw!')
           }

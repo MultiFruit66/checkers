@@ -1,26 +1,27 @@
+import { canvasSize, pas, board } from './variables'
+
 const rules = {
   isCursorInCell(e, cell) {
     const x = e.offsetX
     const y = e.offsetY
 
-    return x > cell.x && x < cell.x + canvasSize / 8 
-        && y > cell.y && y < cell.y + canvasSize / 8
+    return x > cell.x && x < cell.x + canvasSize / 8 && y > cell.y && y < cell.y + canvasSize / 8
   },
 
 
   checkAllMoves() {
-    const moveTo = countOfPas % 2 ? 1 : -1
+    const moveTo = pas.count % 2 ? 1 : -1
     let hasMoves = false
     
     board.forEach(checker => {
       checker.hasMove = false
 
       checker.lines.forEach(line => {
-        if (checker.color === colorOfPas && line[line.indexOf(checker) + moveTo] && !line[ line.indexOf(checker) + moveTo ].color) {
+        if (checker.color === pas.color && line[line.indexOf(checker) + moveTo] && !line[ line.indexOf(checker) + moveTo ].color) {
           checker.hasMove = true
           hasMoves = true
         } 
-        else if (checker.color === colorOfPas && checker.isQueen && line[line.indexOf(checker) - moveTo] && !line[ line.indexOf(checker) - moveTo ].color) {
+        else if (checker.color === pas.color && checker.isQueen && line[line.indexOf(checker) - moveTo] && !line[ line.indexOf(checker) - moveTo ].color) {
           checker.hasMove = true
           hasMoves = true
         }
@@ -41,7 +42,7 @@ const rules = {
 
 
   movesForActive() {
-    const moveTo = countOfPas % 2 ? 1 : -1
+    const moveTo = pas.count % 2 ? 1 : -1
     const active = board.find(checker => checker.isActive)
 
     board.forEach(cell => {
@@ -88,32 +89,32 @@ const rules = {
   },
 
   nextPas() {
-    countOfPas += 1
-    colorOfPas = countOfPas % 2 ? 'red' : 'green'
-    colorOfEnemy = countOfPas % 2 ? 'green' : 'red'
+    pas.count += 1
+    pas.color = pas.count % 2 ? 'red' : 'green'
+    pas.enemy = pas.count % 2 ? 'green' : 'red'
   },
 
   checkAllAttacks() {
-    mustBeAttack = false
+    pas.mustBeAttack = false
 
     board.forEach(checker => {
       checker.lines.forEach(line => {
         const index = line.indexOf(checker)
 
-        if (checker.color === colorOfPas && !checker.isQueen) {
-          if (line[index + 2] && line[index + 1].color === colorOfEnemy && !line[index + 2].color
-          ||  line[index - 2] && line[index - 1].color === colorOfEnemy && !line[index - 2].color) {
+        if (checker.color === pas.color && !checker.isQueen) {
+          if (line[index + 2] && line[index + 1].color === pas.enemy && !line[index + 2].color
+          ||  line[index - 2] && line[index - 1].color === pas.enemy && !line[index - 2].color) {
 
-            if (!mustBeAttack) {
+            if (!pas.mustBeAttack) {
               board.forEach(cell => cell.hasMove = false)
             }
 
             checker.hasMove = true
-            mustBeAttack = true
+            pas.mustBeAttack = true
           }
         }
 
-        if (checker.color === colorOfPas && checker.isQueen) {
+        if (checker.color === pas.color && checker.isQueen) {
 
           const findQueenAttack = (regexp) => {
             let attackLine = line.map(cell => cell.color).join(' ').match(regexp)
@@ -123,22 +124,22 @@ const rules = {
 
               if (attackLine.every((cell, i) => line[i + index] && cell === line[i + index].color) 
               || attackLine.reverse().every((cell, i) => line[index - i] && cell === line[index - i].color)) {
-                if (!mustBeAttack) {
+                if (!pas.mustBeAttack) {
                   board.forEach(cell => cell.hasMove = false)
                 }
   
                 checker.hasMove = true
-                mustBeAttack = true
+                pas.mustBeAttack = true
               }
             }
           }
 
-          findQueenAttack(new RegExp(`(${colorOfPas})\\s(false\\s)*${colorOfEnemy}\\s(false\\s?)+`, 'g'))
-          findQueenAttack(new RegExp(`(false\\s)+${colorOfEnemy}\\s(false\\s)*${colorOfPas}\\s?`, 'g'))
+          findQueenAttack(new RegExp(`(${pas.color})\\s(false\\s)*${pas.enemy}\\s(false\\s?)+`, 'g'))
+          findQueenAttack(new RegExp(`(false\\s)+${pas.enemy}\\s(false\\s)*${pas.color}\\s?`, 'g'))
         }
       })
     })
-    return mustBeAttack
+    return pas.mustBeAttack
   },
 
 
@@ -154,11 +155,11 @@ const rules = {
 
     if (!active.isQueen) {
       active.lines.forEach(line => {
-        if (line[line.indexOf(active) + 2] && line[line.indexOf(active) + 1].color === colorOfEnemy && !line[line.indexOf(active) + 2].color) {
+        if (line[line.indexOf(active) + 2] && line[line.indexOf(active) + 1].color === pas.enemy && !line[line.indexOf(active) + 2].color) {
           line[line.indexOf(active) + 2].hasMove = true
           areAttacks = true
         } 
-        if (line[line.indexOf(active) - 2] && line[line.indexOf(active) - 1].color === colorOfEnemy && !line[line.indexOf(active) - 2].color) {
+        if (line[line.indexOf(active) - 2] && line[line.indexOf(active) - 1].color === pas.enemy && !line[line.indexOf(active) - 2].color) {
           line[line.indexOf(active) - 2].hasMove = true
           areAttacks = true
         }
@@ -186,8 +187,8 @@ const rules = {
           }
         }
         
-        findQueenAttacks(new RegExp(`(${colorOfPas})\\s(false\\s)*${colorOfEnemy}\\s(false\\s?)+`, 'g'), 'i + line.indexOf(active)')
-        findQueenAttacks(new RegExp(`(false\\s)+${colorOfEnemy}\\s(false\\s)*${colorOfPas}\\s?`, 'g'), 'line.indexOf(active) - i')
+        findQueenAttacks(new RegExp(`(${pas.color})\\s(false\\s)*${pas.enemy}\\s(false\\s?)+`, 'g'), 'i + line.indexOf(active)')
+        findQueenAttacks(new RegExp(`(false\\s)+${pas.enemy}\\s(false\\s)*${pas.color}\\s?`, 'g'), 'line.indexOf(active) - i')
       })
     }
     return areAttacks
@@ -229,10 +230,7 @@ const rules = {
         cell.isQueen = true
       }
     })
-  },
-
-
-  checkFinish() {
-    console.log(board.reduce((count, red) => red.color === 'red' ? count + 1 : count))
   }
 }
+
+export default rules

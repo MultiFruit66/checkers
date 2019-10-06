@@ -1,3 +1,11 @@
+import { canvasSize, board } from './variables'
+
+const canvas = document.getElementById('canvas')
+const ctx = canvas.getContext('2d')
+
+canvas.setAttribute('width', canvasSize)
+canvas.setAttribute('height', canvasSize)
+
 const draw = {
   app() {
     const background = new Image()
@@ -67,3 +75,5 @@ const draw = {
     }, 100)
   }
 }
+
+export default draw
