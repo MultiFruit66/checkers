@@ -5,6 +5,7 @@ body {
 #app {
   width: 100%;
   height: -webkit-fill-available;
+  min-height: 100vh;
   background: url(../img/background.png) repeat-y; 
   background-size: cover;
   display: flex;
